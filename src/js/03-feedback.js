@@ -4,7 +4,7 @@ const refs = {
     form: document.querySelector('.feedback-form'),
 }
 const LOCALSTORAGE_KEY = "feedback-form-state";
-const formData = {};
+let formData = {};
 
 refs.form.addEventListener('input', throttle(onInputForm, 500));
 refs.form.addEventListener('submit', onSubmitForm);
@@ -16,19 +16,28 @@ function onInputForm(evt) {
 }
 
 function dataVarification() {
-    const savedFormData = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY));
+    let savedFormData = localStorage.getItem(LOCALSTORAGE_KEY);
 
     if (savedFormData) {
-        refs.form.email.value = savedFormData.email;
-        refs.form.message.value = savedFormData.message;
+        savedFormData = JSON.parse(savedFormData);
+       
+        Object.entries(savedFormData).forEach(([name, value]) => {
+            formData[name] = value;
+            refs.form.elements[name].value = value;
+        });
     }
-
 }
 
 function onSubmitForm(evt) {
     evt.preventDefault();
-   
-    console.log(JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY)))
+
+    if (refs.form.email.value === '' || refs.form.message.value === '') {
+        alert('Fill in the fields: email, message')
+    }
+
+    formData = {};
+    console.log(formData);  
+    
     evt.currentTarget.reset();
     localStorage.removeItem(LOCALSTORAGE_KEY);
 }
