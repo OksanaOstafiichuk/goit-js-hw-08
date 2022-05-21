@@ -33,6 +33,7 @@ function onSubmitForm(evt) {
 
     if (refs.form.email.value === '' || refs.form.message.value === '') {
         alert('Fill in the fields: email, message')
+        return;
     }
 
     formData = {};
